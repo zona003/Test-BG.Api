@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AuthServer.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using AuthServer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthServer.Controllers
 {
@@ -22,11 +24,19 @@ namespace AuthServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            if (UserId == null)
+            AppUser currentUser =  await _context.Users.FirstOrDefaultAsync(u=> u.UserName == UserId);
+            if (currentUser == null)
                 return BadRequest();
-            return Ok(UserId.ToString());
+            return Ok(new
+            {
+                username = currentUser.UserName,
+                firstname = currentUser.FirstName,
+                lastname = currentUser.LastName,
+                birthDate = currentUser.BirthDate,
+                address = currentUser.Address
+            });
         }
     }
 }
