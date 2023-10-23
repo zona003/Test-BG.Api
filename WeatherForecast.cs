@@ -1,4 +1,4 @@
-namespace NewToken
+namespace AuthServer
 {
     public class WeatherForecast
     {
